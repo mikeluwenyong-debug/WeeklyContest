@@ -2,8 +2,13 @@ class Solution {
     public int minScore(int n, int[][] roads) {
         
         Map<Integer, List<int[]>> graph=new HashMap<>();
-        buildGraph(roads,graph);
-        boolean[] visited=new boolean[n+1];
+       for(int[] r:roads)
+        {
+            graph.putIfAbsent(r[0],new ArrayList<>());
+            graph.get(r[0]).add(new int[]{r[1],r[2]});
+             graph.putIfAbsent(r[1],new ArrayList<>());
+            graph.get(r[1]).add(new int[]{r[0],r[2]});
+        }
         //dfs(graph,1,visited,Integer.MAX_VALUE,n);
         bfs(1,graph,n);
         
