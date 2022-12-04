@@ -20,6 +20,7 @@ class Solution {
         {
             int current=q.poll();
             visited[current]=true;
+            if(!graph.containsKey(current)) continue;
             for(int[] next:graph.get(current))
             {
                 if(!visited[next[0]])
