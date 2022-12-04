@@ -10,9 +10,35 @@ class Solution {
             graph.get(r[1]).add(new int[]{r[0],r[2]});
         }
         //dfs(graph,1,visited,Integer.MAX_VALUE,n);
-        bfs(1,graph,n);
+        djt(1,graph,n);
         
         return min;
+        
+    }
+    
+    private void djt(int p,Map<Integer,List<int[]>> graph,int n)
+    {
+        PriorityQueue<int[]> pq=new PriorityQueue<>((a,b)->(a[1]-b[1]));
+        int[] dist=new int[n+1];
+        Arrays.fill(dist,Integer.MAX_VALUE);
+        pq.offer(new int[]{p,1});
+        while(!pq.isEmpty())
+        {
+            int[] current=pq.poll();
+            for(int[] next:graph.get(current[0]))
+            {
+                if(next[1]<dist[next[0]])
+                {
+                    dist[next[0]]=next[1];
+                    pq.add(new int[]{next[0],next[1]});
+                }
+            }
+        }
+        
+        for(int i=1;i<=n;i++)
+        {
+            min=Math.min(min,dist[i]);
+        }
         
     }
     
