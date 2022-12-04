@@ -1,68 +1,44 @@
+class pair{
+    int node;
+    int dist;
+    pair(int node1,int dist1){
+        node=node1;
+        dist=dist1;
+    }
+}
 class Solution {
     public int minScore(int n, int[][] roads) {
+        //creating the adj list
+        List<List<pair>> adj=new ArrayList<>();
+        for(int i=0;i<=n;i++)adj.add(new ArrayList<>());
         
-        Map<Integer, List<int[]>> graph=new HashMap<>();
-       for(int[] r:roads)
-        {
-            graph.putIfAbsent(r[0],new ArrayList<>());
-            graph.get(r[0]).add(new int[]{r[1],r[2]});
-             graph.putIfAbsent(r[1],new ArrayList<>());
-            graph.get(r[1]).add(new int[]{r[0],r[2]});
+        for(int p[]:roads){
+            adj.get(p[0]).add(new pair(p[1],p[2]));
+            adj.get(p[1]).add(new pair(p[0],p[2]));
         }
-        //dfs(graph,1,visited,Integer.MAX_VALUE,n);
-        bfs(1,graph,n);
-        
-        return min;
-        
-    }
-    
-    private void bfs(int p,Map<Integer,List<int[]>> graph,int n)
-    {
-        boolean[] visited=new boolean[n+1];
-        Queue<Integer> q=new LinkedList<>();
-        q.offer(p);
-        while(!q.isEmpty())
-        {
-            int current=q.poll();
-            visited[current]=true;
-            if(!graph.containsKey(current)) continue;
-            for(int[] next:graph.get(current))
-            {
-                if(!visited[next[0]])
-                {
-                    min=Math.min(min,next[1]);
-                    q.offer(next[0]);
+        //pq for dijkstra
+        Queue<pair> q=new PriorityQueue<>((a,b)->a.dist-b.dist);
+        q.add(new pair(1,0));
+        int distn[]=new int[n+1];
+        Arrays.fill(distn,Integer.MAX_VALUE);
+     
+        while(!q.isEmpty()){
+            pair it=q.poll();
+            int node=it.node;
+            int dis=it.dist;
+            for(pair x1:adj.get(node)){
+                //just storing the min edge modifying the dijkstra
+                if(x1.dist<distn[x1.node]){
+                    distn[x1.node]=x1.dist;
+                    q.add(new pair(x1.node,distn[x1.node]));
                 }
-
             }
         }
-    }
-    
-    int min=Integer.MAX_VALUE;
-    //boolean connected=false;
-    
-    private void dfs(Map<Integer,List<int[]>> graph,int p,boolean[] visited,int currentMin,int n)
-    {
-       
-        if(visited[p]) return;
-        visited[p]=true;
-        if(graph.containsKey(p))
-            for(int[] next:graph.get(p))
-            {
-                dfs(graph,next[0],visited,min=Math.min(min,next[1]),n);
-            }
-        visited[p]=false;
-       
-    }
-    
-    private void buildGraph(int[][] roads,Map<Integer,List<int[]>> graph)
-    {
-        for(int[] r:roads)
-        {
-            graph.putIfAbsent(r[0],new ArrayList<>());
-            graph.get(r[0]).add(new int[]{r[1],r[2]});
-             graph.putIfAbsent(r[1],new ArrayList<>());
-            graph.get(r[1]).add(new int[]{r[0],r[2]});
-        }
+        //finding out min distn out of all node distn array
+        int min=(int)1e9;
+         for(int i=0;i<=n;i++){
+             min=Math.min(distn[i],min);
+         }
+        return min;
     }
 }
